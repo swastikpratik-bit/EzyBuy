@@ -65,6 +65,7 @@ schema.virtual("age").get(function(){
     if(today.getMonth() < dob.getMonth() || (today.getMonth()  ===  dob.getMonth() && today.getDate() < dob.getDate())){
         age--;
     }
-})
+    return age;
+});
 
 export const User = mongoose.model<IUser>('User', schema);

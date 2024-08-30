@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Document } from "mongoose"
 import { invalidateCacheType, orderItemsType } from "../types/types.js";
 import { myCache } from "../app.js";
 import { Product } from "../models/products.js";
@@ -11,7 +11,7 @@ export const connectDB = (url : string) =>{
     .catch((e) => console.log(e));
 }
 
-export const invalidateCache = async({product , order , admin , userId , orderId , productIds} : invalidateCacheType) => {
+export const invalidateCache = ({product , order , admin , userId , orderId , productIds} : invalidateCacheType) => {
     if(product){
         const productKey : string[] = [
             "latest-product",
@@ -32,7 +32,7 @@ export const invalidateCache = async({product , order , admin , userId , orderId
        
     }
     if(admin){
-
+      myCache.del(["admin-stats","admin-pie-charts" , "admin-bar-charts" , "admin-line-charts"]);
     }
 }
 
@@ -50,7 +50,7 @@ export const calculatePercentage = (thisMonth : number , lastMonth : number)=>{
 
 
     if(lastMonth === 0)return thisMonth*100;
-    const percent = ((thisMonth - lastMonth)/lastMonth) * 100 ;
+    const percent = (thisMonth/lastMonth) * 100 ;
 
     return Number(percent.toFixed(0))   ;
 };
@@ -78,4 +78,43 @@ export const getInventories = async ({
   
     return categoryCount;
   };
-  
+
+
+interface MyDocument extends Document {
+  createdAt: Date;
+  discount?: number;
+  total?: number;
+}
+
+type FuncProps = {
+  length: number;
+  docArr: MyDocument[];
+  today: Date;
+  property?: "discount" | "total";
+};
+
+export const getChartData = ({
+  length,
+  docArr,
+  today,
+  property,
+}: FuncProps) => {
+  const data: number[] = new Array(length).fill(0);
+
+  docArr.forEach((i) => {
+    const creationDate = i.createdAt;
+    const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+
+    if (monthDiff < length) {
+      if (property) {
+        data[length - monthDiff - 1] += i[property]!;
+      } else {
+        data[length - monthDiff - 1] += 1;
+      }
+    }
+  });
+
+  return data;
+};
+
+

@@ -8,7 +8,7 @@ export const connectDB = (url) => {
         .then((c) => console.log(`DB Connected to ${c.connection.host}`))
         .catch((e) => console.log(e));
 };
-export const invalidateCache = async ({ product, order, admin, userId, orderId, productIds }) => {
+export const invalidateCache = ({ product, order, admin, userId, orderId, productIds }) => {
     if (product) {
         const productKey = [
             "latest-product",
@@ -24,6 +24,7 @@ export const invalidateCache = async ({ product, order, admin, userId, orderId, 
         myCache.del(ordersKeys);
     }
     if (admin) {
+        myCache.del(["admin-stats", "admin-pie-charts", "admin-bar-charts", "admin-line-charts"]);
     }
 };
 export const reduceStock = async (orderItems) => {
@@ -39,7 +40,7 @@ export const reduceStock = async (orderItems) => {
 export const calculatePercentage = (thisMonth, lastMonth) => {
     if (lastMonth === 0)
         return thisMonth * 100;
-    const percent = ((thisMonth - lastMonth) / lastMonth) * 100;
+    const percent = (thisMonth / lastMonth) * 100;
     return Number(percent.toFixed(0));
 };
 export const getInventories = async ({ categories, productsCount, }) => {
@@ -52,4 +53,20 @@ export const getInventories = async ({ categories, productsCount, }) => {
         });
     });
     return categoryCount;
+};
+export const getChartData = ({ length, docArr, today, property, }) => {
+    const data = new Array(length).fill(0);
+    docArr.forEach((i) => {
+        const creationDate = i.createdAt;
+        const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
+        if (monthDiff < length) {
+            if (property) {
+                data[length - monthDiff - 1] += i[property];
+            }
+            else {
+                data[length - monthDiff - 1] += 1;
+            }
+        }
+    });
+    return data;
 };
