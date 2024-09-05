@@ -135,7 +135,7 @@ export const searchAllProducts = TryCatch(async (req, res, next) => {
         if (category)
             baseQuery.category = category;
         const productsPromise = Product.find(baseQuery)
-            .sort(sort && { price: sort === "asc" ? 1 : -1 })
+            .sort(sort && { price: sort === "ascending" ? 1 : -1 })
             .limit(limit)
             .skip(skip);
         const [productsFetched, filteredOnlyProduct] = await Promise.all([

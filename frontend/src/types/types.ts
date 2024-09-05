@@ -8,11 +8,11 @@ export type User = {
     _id: string;
 };
 
-export interface Product{
+export type Product = {
     name: string;
-    price: string;
+    price: number;
     photo: string;
-    stock: string;
+    stock: number;
     category: string;
     _id: string;
 };
