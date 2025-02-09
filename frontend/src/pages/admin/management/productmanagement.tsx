@@ -4,7 +4,7 @@ import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useSelector } from "react-redux";
 import { userReducerInitialState } from "../../../types/reducer-types";
 import { useDeleteProductMutation, useProductDetailsQuery, useUpdateProductMutation } from "../../../redux/api/productAPI";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { server } from "../../../redux/store";
 import { Skeleton } from "../../../components/loader";
 import { responseToast } from "../../../utils/features";
@@ -15,7 +15,7 @@ const Productmanagement = () => {
 
   const params = useParams();
   const navigate = useNavigate();
-  const {data , isLoading} = useProductDetailsQuery(params.id!);
+  const {data , isLoading , isError } = useProductDetailsQuery(params.id!);
 
 
 
@@ -33,8 +33,9 @@ const Productmanagement = () => {
   const [stockUpdate, setStockUpdate] = useState<number>(stock);
   const [nameUpdate, setNameUpdate] = useState<string>(name);
   const [categoryUpdate, setCategoryUpdate] = useState<string>(category);
-  const [photoUpdate, setPhotoUpdate] = useState<string>(photo);
+  const [photoUpdate, setPhotoUpdate] = useState<string>("");
   const [photoFile, setPhotoFile] = useState<File>();
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
 
   const [updateProduct]  = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -57,7 +58,9 @@ const Productmanagement = () => {
 
   const submitHandler = async(e: FormEvent<HTMLFormElement>)=> {
     e.preventDefault();
-    console.log("here");
+    
+    setBtnLoading(true) ;
+  
     const formData = new FormData();
 
     if(nameUpdate)formData.set("name" , nameUpdate);
@@ -85,7 +88,11 @@ const Productmanagement = () => {
       setStockUpdate(data.product.stock);
       setCategoryUpdate(data.product.category);
     }
-  } , [data])
+  } , [data]);
+
+  if(isError){
+    return <Navigate to={"/404"}/>
+  }
 
 
   return (
@@ -156,7 +163,7 @@ const Productmanagement = () => {
             </div>
 
             {photoUpdate && <img src={photoUpdate} alt="New Image" />}
-            <button type="submit">Update</button>
+            <button type="submit" disabled={btnLoading}>Update</button>
           </form>
         </article>
             </>

@@ -1,7 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { AllProductsResponse, CategoriesResponse, deleteProductRequest, MessageResponse, NewProductRequest, ProductResponse, searchProductsRequest, searchProductsResponse, updateProductRequest, UserResponse } from "../../types/api-types"
-import { User } from "../../types/types"
-import axios from "axios";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { AllProductsResponse, CategoriesResponse, deleteProductRequest, MessageResponse, NewProductRequest, ProductResponse, searchProductsRequest, searchProductsResponse, updateProductRequest } from "../../types/api-types";
 
 export const productAPI = createApi({
     reducerPath: "productApi" ,

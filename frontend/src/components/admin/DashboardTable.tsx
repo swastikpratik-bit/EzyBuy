@@ -6,7 +6,7 @@ interface DataType {
   quantity: number;
   discount: number;
   amount: number;
-  status: string;
+  status: string ;
 }
 
 const columns: Column<DataType>[] = [

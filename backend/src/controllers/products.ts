@@ -126,7 +126,7 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
   
     invalidateCache({
       product: true,
-    //   productId: String(product._id),
+      productIds: [String(product._id)],
       admin: true,
     });
   

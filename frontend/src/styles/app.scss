@@ -100,10 +100,32 @@
     }
   }
 
+  .not-found {
+    @include flex(column);
+    > svg{
+      font-size: 3rem ; 
+    }
+  }
+
   .heading{
     @include heading;
     margin: 1rem 0;
     text-align: center  ;
+  }
+
+  .checkout-container{
+    max-width: 400px;
+    width: 100%;
+    margin: auto  ;
+    >form{
+      @include flex(column , flex-start , stretch , 2rem);
+
+      > button {
+        @include btn(1rem , $color3 , $color1);
+        width: 100%;
+        font-size: 1.1rem;
+      }
+    }
   }
 
   .admin-container {

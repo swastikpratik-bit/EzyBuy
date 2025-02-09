@@ -1,8 +1,20 @@
-import { Product, User } from "./types";
+import { CartItem, Order, Product, ShippingInfo, Stats, User } from "./types";
 
+
+export type CustomError = {
+    status : number;  
+    data : { 
+        message : string ;
+        success : boolean;
+    }
+};
 export type MessageResponse = {
     success : Boolean ;
     message : string ;
+}
+export type allUserResponse = {
+    success : Boolean ;
+    users : User[];
 }
 export type UserResponse = {
     success : Boolean ;
@@ -36,12 +48,19 @@ export type CategoriesResponse = {
     categories : string[];
 }
 
-export type CustomError = {
-    status : number;  
-    data : { 
-        message : string ;
-        success : boolean;
-    }
+export type  AllOrderResponse = {
+    success : boolean ;
+    orders : Order[];
+};
+
+export type  orderDetailsResponse = {
+    success : boolean ;
+    order : Order;
+};
+
+export type  statsResponse = {
+    success : boolean ;
+    stats : Stats;
 };
 
 export type  NewProductRequest = {
@@ -57,3 +76,24 @@ export type deleteProductRequest = {
     userId : string;
     productId : string ;
 }
+
+export type newOrderRequest = {
+    shippingInfo : ShippingInfo ,
+    orderItem : CartItem[] , 
+    subtotal : number ; 
+    tax : number ; 
+    shippingCharges : number ; 
+    discount : number ; 
+    total : number ;
+    user : string , 
+};
+
+export type updateOrderRequest = {
+    userId : String; 
+    orderId : String ;
+};
+
+export type deleteUserRequest = {
+    userId : String; 
+    adminUserId  : String ;
+};
