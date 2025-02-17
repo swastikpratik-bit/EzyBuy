@@ -39,7 +39,6 @@ export const carteRedcuer = createSlice({
 
         },
         removeCartItem : (state , action : PayloadAction<string>) => {
-            console.log("here22");
             state.loading = true ;
             state.cartItems = state.cartItems.filter((i)=> i.productId  !== action.payload);
             state.loading = false;

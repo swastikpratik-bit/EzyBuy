@@ -79,10 +79,10 @@ export type deleteProductRequest = {
 
 export type newOrderRequest = {
     shippingInfo : ShippingInfo ,
-    orderItem : CartItem[] , 
-    subtotal : number ; 
+    orderItems : CartItem[] , 
+    subTotal : number ; 
     tax : number ; 
-    shippingCharges : number ; 
+    shippingCharges : number; 
     discount : number ; 
     total : number ;
     user : string , 

@@ -13,67 +13,67 @@ import { responseToast } from '../utils/features';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
-const CheckOutForm = () =>{
+const CheckOutForm = () => {
 
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate();
-    const dispatch  = useDispatch();
+    const dispatch = useDispatch();
 
     const { user } = useSelector((
-        state : RootState) => state.userReducer
+        state: RootState) => state.userReducer
     );
 
-    const { 
-        shippingCharges , 
-        cartItems , 
-        subtotal ,
-        tax ,
-        discount , 
-        shippingInfo ,
+    const {
+        shippingCharges,
+        cartItems,
+        subtotal,
+        tax,
+        discount,
+        shippingInfo,
         total,
-     } = useSelector((
-        state : RootState) => state.cartReducer
+    } = useSelector((
+        state: RootState) => state.cartReducer
     );
 
-    const [isProccessing , setIsProccessing]= useState<boolean> (false);
+    const [isProccessing, setIsProccessing] = useState<boolean>(false);
 
     const [newOrder] = useNewOrderMutation();
 
-    const submitHandler = async(e : FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(!stripe || !elements){
-            return ;
+        if (!stripe || !elements) {
+            return;
         }
 
         setIsProccessing(true);
 
-        const orderData : newOrderRequest = {
-            shippingCharges , 
-             orderItem : cartItems , 
-             subtotal , 
-             tax , 
-            discount , 
-            shippingInfo, 
-            total , 
-            user : user?._id!
-        } ;
+        const orderData: newOrderRequest = {
+            shippingCharges,
+            orderItems: cartItems,
+            subTotal: subtotal,
+            tax,
+            discount,
+            shippingInfo,
+            total,
+            user: user?._id!
+        };
 
-        const {paymentIntent , error} = await stripe.confirmPayment({
-            elements ,
-            confirmParams : {return_url : window.location.origin}, 
-            redirect : "if_required",
+        const { paymentIntent, error } = await stripe.confirmPayment({
+            elements,
+            confirmParams: { return_url: window.location.origin },
+            redirect: "if_required",
         });
 
-        if(error){
+        if (error) {
             setIsProccessing(false);
             return toast.error(error.message || "Something Went Wrong");
         }
-        if(paymentIntent.status === "succeeded"){
+        if (paymentIntent.status === "succeeded") {
             const res = await newOrder(orderData);
             dispatch(resetCart());
-            responseToast(res , navigate , "/order");
+            responseToast(res, navigate, "/orders");
         }
         setIsProccessing(false);
     };
@@ -81,10 +81,10 @@ const CheckOutForm = () =>{
 
     return (
         <div className='checkout-container'>
-            
+
             <form onSubmit={submitHandler}>
-                <PaymentElement/>
-                <button type='submit' disabled={isProccessing}>{isProccessing? "Processing..." : "Pay" } </button>
+                <PaymentElement />
+                <button type='submit' disabled={isProccessing}>{isProccessing ? "Processing..." : "Pay"} </button>
 
             </form>
         </div>
@@ -95,20 +95,20 @@ const Checkout = () => {
 
     const location = useLocation();
 
-    const clientSecret : string | undefined = location.state
+    const clientSecret: string | undefined = location.state
 
-    if(!clientSecret){
-        return <Navigate to={"/shipping"}/> 
+    if (!clientSecret) {
+        return <Navigate to={"/shipping"} />
     }
-  return (
-    <Elements options={
-        {
-            clientSecret,
-        }
-    } stripe={stripePromise}>
-        <CheckOutForm/>
-    </Elements>
-  )
+    return (
+        <Elements options={
+            {
+                clientSecret,
+            }
+        } stripe={stripePromise}>
+            <CheckOutForm />
+        </Elements>
+    )
 }
 
 export default Checkout
